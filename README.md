@@ -1,8 +1,8 @@
-# 🏥 Hospital Management System
+# Hospital Management System
 
 A complete hospital management API built with ASP.NET Core 8, Entity Framework Core 8, and SQLite.
 
-## 🏗️ Architecture
+## Architecture
 
 This project follows **Clean Architecture** with 4 layers:
 
@@ -15,7 +15,7 @@ HospitalManagement.Tests → Unit Tests (xUnit + InMemory DB)
 ```
 
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 - .NET 8 SDK
@@ -79,3 +79,18 @@ Optimistic Concurrency via RowVersion on Patient entity
 Restrict Delete on Doctor→Department (prevent accidental data loss)
 Cascade Delete on Consultation→Patient (consultations follow patient)
 Projections for statistics (SQL-level aggregation)
+
+## SAMPLE RUNNING APPLICATION SNAPSHOTS
+### UNIT TESTS
+
+<img width="2868" height="1786" alt="hospital_db_unit_tests" src="https://github.com/user-attachments/assets/5ee7e9a0-354c-4fa7-9df8-b925a6abcb3a" />
+
+### APPLICATION LAUNCH 
+
+<img width="2880" height="1800" alt="application_launch success" src="https://github.com/user-attachments/assets/f35433ef-6800-4d5c-8dc4-85aaaf686ecc" />
+
+### APPLICATION API-ENDPOINTS
+
+<img width="2876" height="1724" alt="application api endpoints" src="https://github.com/user-attachments/assets/c5d3b072-a6a2-4353-8edb-ce77e4618099" />
+
+
