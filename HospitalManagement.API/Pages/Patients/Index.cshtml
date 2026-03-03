@@ -1,0 +1,95 @@
+@page
+@model HospitalManagement.API.Pages.Patients.IndexModel
+@{
+    ViewData["Title"] = "Patients";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2><i class="bi bi-people"></i> Patients</h2>
+        <p class="text-muted mb-0">Manage patient records</p>
+    </div>
+    <a asp-page="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> New Patient
+    </a>
+</div>
+
+<!-- Search -->
+<div class="card stat-card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-2">
+            <div class="col-md-10">
+                <input type="text" asp-for="Search" class="form-control" placeholder="Search by name..." />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="card stat-card">
+    <div class="card-body p-0">
+        <table class="table table-modern mb-0">
+            <thead>
+                <tr>
+                    <th>File #</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Date of Birth</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model.Patients.Items)
+                {
+                    <tr>
+                        <td><code>@p.FileNumber</code></td>
+                        <td><strong>@p.LastName</strong>, @p.FirstName</td>
+                        <td>@p.Email</td>
+                        <td>@p.Phone</td>
+                        <td>@p.DateOfBirth.ToString("dd/MM/yyyy")</td>
+                        <td class="text-end">
+                            <a asp-page="/Dashboard/PatientRecord" asp-route-PatientId="@p.Id"
+                               class="btn btn-sm btn-outline-primary" title="View Record">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@p.Id"
+                                  class="d-inline"
+                                  onsubmit="return confirm('Delete this patient?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Pagination -->
+@if (Model.Patients.TotalPages > 1)
+{
+    <nav class="mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item @(Model.Patients.HasPrevious ? "" : "disabled")">
+                <a class="page-link" asp-page="Index" asp-route-PageNum="@(Model.PageNum - 1)" asp-route-Search="@Model.Search">Previous</a>
+            </li>
+            @for (int i = 1; i <= Model.Patients.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.PageNum ? "active" : "")">
+                    <a class="page-link" asp-page="Index" asp-route-PageNum="@i" asp-route-Search="@Model.Search">@i</a>
+                </li>
+            }
+            <li class="page-item @(Model.Patients.HasNext ? "" : "disabled")">
+                <a class="page-link" asp-page="Index" asp-route-PageNum="@(Model.PageNum + 1)" asp-route-Search="@Model.Search">Next</a>
+            </li>
+        </ul>
+    </nav>
+}

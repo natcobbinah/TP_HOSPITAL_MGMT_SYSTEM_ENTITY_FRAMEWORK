@@ -1,0 +1,56 @@
+@page
+@model HospitalManagement.API.Pages.Departments.CreateModel
+@{
+    ViewData["Title"] = "New Department";
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-building-add text-warning"></i> New Department</h2>
+    <p class="text-muted">Add a new hospital department</p>
+</div>
+
+<div class="card stat-card">
+    <div class="card-body">
+        <form method="post">
+            <div asp-validation-summary="All" class="alert alert-danger"
+                 style="display:@(ViewData.ModelState.ErrorCount > 0 ? "block" : "none")"></div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="Department.Name" class="form-label fw-bold">Department Name *</label>
+                    <input asp-for="Department.Name" class="form-control" placeholder="Cardiology" />
+                    <span asp-validation-for="Department.Name" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Department.Location" class="form-label fw-bold">Location</label>
+                    <input asp-for="Department.Location" class="form-control" placeholder="Building A, Floor 3" />
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="Department.HeadDoctorId" class="form-label fw-bold">Head Doctor</label>
+                    <select asp-for="Department.HeadDoctorId" asp-items="Model.DoctorList" class="form-select">
+                        <option value="">-- None --</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Department.ParentDepartmentId" class="form-label fw-bold">Parent Department</label>
+                    <select asp-for="Department.ParentDepartmentId" asp-items="Model.ParentDepartmentList" class="form-select">
+                        <option value="">-- None (top level) --</option>
+                    </select>
+                </div>
+            </div>
+
+            <hr />
+            <div class="d-flex justify-content-between">
+                <a asp-page="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-check-circle"></i> Create Department
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

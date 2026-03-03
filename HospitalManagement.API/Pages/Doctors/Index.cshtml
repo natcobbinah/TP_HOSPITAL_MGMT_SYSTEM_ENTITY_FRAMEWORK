@@ -1,0 +1,65 @@
+@page
+@model HospitalManagement.API.Pages.Doctors.IndexModel
+@{
+    ViewData["Title"] = "Doctors";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2><i class="bi bi-person-badge"></i> Doctors</h2>
+        <p class="text-muted mb-0">Manage medical staff</p>
+    </div>
+    <a asp-page="Create" class="btn btn-success">
+        <i class="bi bi-plus-circle"></i> New Doctor
+    </a>
+</div>
+
+<div class="card stat-card">
+    <div class="card-body p-0">
+        <table class="table table-modern mb-0">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>License #</th>
+                    <th>Specialty</th>
+                    <th>Department</th>
+                    <th class="text-end">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model.Doctors)
+                {
+                    <tr>
+                        <td><strong>Dr. @d.LastName</strong>, @d.FirstName</td>
+                        <td><code>@d.LicenseNumber</code></td>
+                        <td><span class="badge bg-info text-dark">@d.Specialty</span></td>
+                        <td><i class="bi bi-building"></i> @d.DepartmentName</td>
+                        <td class="text-end">
+                            <a asp-page="/Dashboard/DoctorPlanning" asp-route-DoctorId="@d.Id"
+                               class="btn btn-sm btn-outline-success" title="Planning">
+                                <i class="bi bi-calendar3"></i>
+                            </a>
+                            <form method="post" asp-page-handler="Delete" asp-route-id="@d.Id"
+                                  class="d-inline" onsubmit="return confirm('Delete this doctor?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Doctors.Any())
+                {
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state py-4">
+                                <i class="bi bi-person-x d-block" style="font-size:2rem;opacity:0.3;"></i>
+                                <p class="mb-0">No doctors registered. Add one to get started.</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

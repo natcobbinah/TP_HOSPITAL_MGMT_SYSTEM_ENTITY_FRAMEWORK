@@ -45,6 +45,9 @@ builder.Services.AddControllers()
             System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
     });
 
+//  Add Razor Pages support
+builder.Services.AddRazorPages();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -76,9 +79,15 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// Serve static files (CSS, JS, images)
+app.UseStaticFiles();
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
+
+// Map both API controllers AND Razor Pages
 app.MapControllers();
+app.MapRazorPages();
 
 // ──────────────────────────────────────────────
 // 6. Auto-apply migrations on startup (dev only)

@@ -1,0 +1,113 @@
+@page
+@model HospitalManagement.API.Pages.Consultations.IndexModel
+@{
+    ViewData["Title"] = "Consultations";
+}
+
+<div class="page-header d-flex justify-content-between align-items-center">
+    <div>
+        <h2><i class="bi bi-calendar-check"></i> Consultations</h2>
+        <p class="text-muted mb-0">View and manage consultations</p>
+    </div>
+    <a asp-page="Create" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> New Consultation
+    </a>
+</div>
+
+<!-- Doctor Filter -->
+<div class="card stat-card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label class="form-label fw-bold">Filter by Doctor (Today's Schedule)</label>
+                <select asp-for="DoctorId" class="form-select">
+                    <option value="">-- All doctors --</option>
+                    @foreach (var d in Model.Doctors)
+                    {
+                        <option value="@d.Id" selected="@(d.Id == Model.DoctorId)">
+                            Dr. @d.LastName, @d.FirstName — @d.Specialty
+                        </option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-funnel"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Consultations Table -->
+<div class="card stat-card">
+    <div class="card-header bg-white py-3">
+        <h5 class="mb-0">
+            <i class="bi bi-calendar-day"></i> Today's Consultations
+            <span class="badge bg-secondary rounded-pill ms-2">@Model.TodayConsultations.Count()</span>
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.TodayConsultations.Any())
+        {
+            <table class="table table-modern mb-0">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Patient</th>
+                        <th>Doctor</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model.TodayConsultations.OrderBy(c => c.Date))
+                    {
+                        var badgeClass = c.Status switch
+                        {
+                            "Planned" => "badge-planned",
+                            "Completed" => "badge-completed",
+                            "Cancelled" => "badge-cancelled",
+                            _ => "bg-secondary"
+                        };
+                        <tr>
+                            <td><strong>@c.Date.ToString("HH:mm")</strong></td>
+                            <td>@c.PatientName</td>
+                            <td>@c.DoctorName</td>
+                            <td>@(string.IsNullOrEmpty(c.Reason) ? "—" : c.Reason)</td>
+                            <td><span class="badge @badgeClass">@c.Status</span></td>
+                            <td class="text-end">
+                                @if (c.Status == "Planned")
+                                {
+                                    <form method="post" asp-page-handler="Complete" asp-route-id="@c.Id" class="d-inline">
+                                        <button type="submit" class="btn btn-sm btn-outline-success" title="Complete">
+                                            <i class="bi bi-check-lg"></i>
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Cancel" asp-route-id="@c.Id" class="d-inline"
+                                          onsubmit="return confirm('Cancel this consultation?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </form>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="empty-state py-4">
+                <i class="bi bi-calendar-x d-block" style="font-size:2rem;opacity:0.3;"></i>
+                <p class="mb-0">
+                    @(Model.DoctorId.HasValue
+                        ? "No consultations today for this doctor."
+                        : "Select a doctor to view today's schedule.")
+                </p>
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,58 @@
+@page
+@model HospitalManagement.API.Pages.Consultations.CreateModel
+@{
+    ViewData["Title"] = "New Consultation";
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-calendar-plus text-primary"></i> Schedule Consultation</h2>
+    <p class="text-muted">Plan a new appointment between a patient and a doctor</p>
+</div>
+
+<div class="card stat-card">
+    <div class="card-body">
+        <form method="post">
+            <div asp-validation-summary="All" class="alert alert-danger"
+                 style="display:@(ViewData.ModelState.ErrorCount > 0 ? "block" : "none")"></div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="Consultation.PatientId" class="form-label fw-bold">Patient *</label>
+                    <select asp-for="Consultation.PatientId" asp-items="Model.PatientList" class="form-select">
+                        <option value="">-- Select patient --</option>
+                    </select>
+                    <span asp-validation-for="Consultation.PatientId" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Consultation.DoctorId" class="form-label fw-bold">Doctor *</label>
+                    <select asp-for="Consultation.DoctorId" asp-items="Model.DoctorList" class="form-select">
+                        <option value="">-- Select doctor --</option>
+                    </select>
+                    <span asp-validation-for="Consultation.DoctorId" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <label asp-for="Consultation.Date" class="form-label fw-bold">Date & Time *</label>
+                    <input asp-for="Consultation.Date" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="Consultation.Date" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Consultation.Reason" class="form-label fw-bold">Reason</label>
+                    <input asp-for="Consultation.Reason" class="form-control" placeholder="Annual checkup, follow-up, etc." />
+                </div>
+            </div>
+
+            <hr />
+            <div class="d-flex justify-content-between">
+                <a asp-page="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-calendar-check"></i> Schedule Consultation
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

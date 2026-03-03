@@ -1,0 +1,140 @@
+@page
+@model HospitalManagement.API.Pages.Dashboard.DoctorPlanningModel
+@{
+    ViewData["Title"] = "Doctor Planning";
+}
+
+<div class="page-header">
+    <h2><i class="bi bi-calendar3 text-success"></i> Doctor Planning</h2>
+    <p class="text-muted">View a doctor's department information and upcoming consultation schedule</p>
+</div>
+
+<!-- ═══════ DOCTOR SELECTOR ═══════ -->
+<div class="card stat-card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label class="form-label fw-bold">Select a Doctor</label>
+                <select asp-for="DoctorId" asp-items="Model.DoctorList" class="form-select form-select-lg">
+                    <option value="">-- Choose a doctor --</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-success btn-lg w-100">
+                    <i class="bi bi-calendar-check"></i> View Planning
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.DoctorPlanning != null)
+{
+    var doctor = Model.DoctorPlanning;
+
+    <!-- ═══════ DOCTOR INFO CARD ═══════ -->
+    <div class="card stat-card mb-4">
+        <div class="card-header bg-success text-white py-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-person-badge"></i> @doctor.FullName
+                </h4>
+                <span class="badge bg-light text-success fs-6">@doctor.Specialty</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p class="mb-1 text-muted small">DEPARTMENT</p>
+                    <p class="fw-bold fs-5">
+                        <i class="bi bi-building"></i> @doctor.DepartmentName
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="mb-1 text-muted small">UPCOMING CONSULTATIONS</p>
+                    <p class="fw-bold fs-5">
+                        <i class="bi bi-calendar-check"></i> @doctor.UpcomingConsultations.Count appointment(s)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════ UPCOMING SCHEDULE ═══════ -->
+    <div class="card stat-card">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0">
+                <i class="bi bi-calendar-week"></i> Upcoming Schedule
+            </h5>
+        </div>
+        <div class="card-body">
+            @if (doctor.UpcomingConsultations.Any())
+            {
+                <!-- Group by date -->
+                @foreach (var dayGroup in doctor.UpcomingConsultations
+                    .GroupBy(c => c.Date.Date)
+                    .OrderBy(g => g.Key))
+                {
+                    <h6 class="text-primary mt-3 mb-2 border-bottom pb-2">
+                        <i class="bi bi-calendar-date"></i>
+                        @dayGroup.Key.ToString("dddd, dd MMMM yyyy")
+                        <span class="badge bg-primary rounded-pill ms-2">@dayGroup.Count()</span>
+                    </h6>
+
+                    <div class="row g-3 mb-3">
+                        @foreach (var consultation in dayGroup.OrderBy(c => c.Date))
+                        {
+                            var badgeClass = consultation.Status switch
+                            {
+                                "Planned" => "badge-planned",
+                                "Completed" => "badge-completed",
+                                "Cancelled" => "badge-cancelled",
+                                _ => "bg-secondary"
+                            };
+
+                            <div class="col-md-6">
+                                <div class="card h-100 border-start border-success border-3">
+                                    <div class="card-body py-2">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <p class="fw-bold mb-1">
+                                                    <i class="bi bi-clock"></i>
+                                                    @consultation.Date.ToString("HH:mm")
+                                                </p>
+                                                <p class="mb-1">
+                                                    <i class="bi bi-person"></i> @consultation.PatientName
+                                                </p>
+                                                @if (!string.IsNullOrEmpty(consultation.Reason))
+                                                {
+                                                    <small class="text-muted">@consultation.Reason</small>
+                                                }
+                                            </div>
+                                            <span class="badge @badgeClass">@consultation.Status</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="bi bi-calendar-x d-block"></i>
+                    <h5>No Upcoming Consultations</h5>
+                    <p>This doctor has no scheduled appointments.</p>
+                    <a asp-page="/Consultations/Create" class="btn btn-success">
+                        <i class="bi bi-plus-circle"></i> Schedule a Consultation
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
+else if (Model.DoctorId.HasValue)
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> Doctor not found.
+    </div>
+}
