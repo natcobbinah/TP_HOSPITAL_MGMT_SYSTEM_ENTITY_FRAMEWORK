@@ -106,7 +106,7 @@ Dashboard views and search endpoints read from replicas. Write operations (creat
 ## 3. Online Appointment System Implementation
 ## System Design Overview
 ┌──────────────────────────────────────────────────────────┐
-│                 ONLINE APPOINTMENT SYSTEM                  │
+│                 ONLINE APPOINTMENT SYSTEM                │
 ├──────────────┬──────────────┬─────────────┬──────────────┤
 │  Patient     │  Availability│  Booking    │  Notification│
 │  Portal      │  Engine      │  Engine     │  Service     │
@@ -122,27 +122,43 @@ Dashboard views and search endpoints read from replicas. Write operations (creat
 
 ## 4. Impact of Adding Billing on the Model
 ## New Entities Required
-Current Model                         With Billing
-═══════════                           ═══════════
-Patient ──→ Consultation              Patient ──→ Consultation ──→ InvoiceLine
-                                                                      │
-                                                                      ▼
-                                      Patient ──→ Invoice ──→ InvoiceLine
-                                                     │
-                                                     ▼
-                                                  Payment
-                                                     │
-                                                     ▼
-                                              InsuranceClaim
+Current Model
+Patient ──→ Consultation
 
----
-This hospital management system provides a solid, well-architected foundation that correctly models the core medical domain. The Clean Architecture ensures that adding features like online appointments or billing requires adding new modules rather than rewriting existing ones. The main areas for production hardening are: authentication, audit logging, soft delete, and migration to a production database engine.
+With Billing
+Patient ──→ Consultation ──→ InvoiceLine
+                                      │
+                                      ▼
+Patient ──→ Invoice ──→ InvoiceLine
+                        │
+                        ▼
+                     Payment
+                        │
+                        ▼
+                 InsuranceClaim
+                 
+# Architectural Assessment
 
-Dimension	Current State	Production Ready
-Data Model	 Complete	Add soft delete, audit fields
-Performance	Indexed, paginated	Add caching, compiled queries
-Security	No auth	Add Identity + JWT + RBAC
-Compliance	No audit	Add audit logging, data retention
-Scalability	SQLite	Migrate to PostgreSQL
-Testability	Unit tests pass	Add integration + load tests
+This hospital management system provides a solid, well-architected foundation that correctly models the core medical domain.
 
+The Clean Architecture approach ensures that adding features like online appointments or billing requires adding new modules rather than rewriting existing ones.
+
+ Main Areas for Production Hardening
+
+Authentication & Authorization
+
+Audit Logging
+
+Soft Delete
+
+| Dimension       | Current State      | Production Ready                  |
+| --------------- | ------------------ | --------------------------------- |
+| **Data Model**  | Complete           | Add soft delete, audit fields     |
+| **Performance** | Indexed, paginated | Add caching, compiled queries     |
+| **Security**    | No authentication  | Add Identity + JWT + RBAC         |
+| **Compliance**  | No audit logging   | Add audit logging, data retention |
+| **Scalability** | SQLite             | Migrate to PostgreSQL             |
+| **Testability** | Unit tests pass    | Add integration + load tests      |
+
+
+Migration to a production-grade database engine
