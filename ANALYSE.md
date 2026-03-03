@@ -105,20 +105,13 @@ Dashboard views and search endpoints read from replicas. Write operations (creat
 
 ## 3. Online Appointment System Implementation
 ## System Design Overview
-┌──────────────────────────────────────────────────────────┐
-│                 ONLINE APPOINTMENT SYSTEM                │
-├──────────────┬──────────────┬─────────────┬──────────────┤
-│  Patient     │  Availability│  Booking    │  Notification│
-│  Portal      │  Engine      │  Engine     │  Service     │
-├──────────────┼──────────────┼─────────────┼──────────────┤
-│ - Search     │ - Generate   │ - Reserve   │ - Email      │
-│   doctors    │   time slots │   slot      │ - SMS        │
-│ - View       │ - Check      │ - Confirm   │ - Push       │
-│   available  │   conflicts  │ - Cancel    │ - Reminders  │
-│   slots      │ - Block      │ - Reschedule│              │
-│ - Book       │   holidays   │             │              │
-│ - Cancel     │              │             │              │
-└──────────────┴──────────────┴─────────────┴──────────────┘
+| Component                | Current Capabilities                                                                    | Production Enhancements Needed                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Patient Portal**       | Search doctors<br>View available slots<br>Book appointment<br>Cancel appointment        | Add authentication (Identity + JWT)<br>Add patient dashboard<br>Add appointment history<br>Add rate limiting                    |
+| **Availability Engine**  | Generate time slots<br>Check scheduling conflicts<br>Block holidays                     | Add recurring availability rules<br>Add timezone handling<br>Add caching for slot queries<br>Add distributed locking            |
+| **Booking Engine**       | Reserve slot<br>Confirm booking<br>Cancel booking<br>Reschedule appointment             | Add optimistic concurrency handling<br>Add idempotency tokens<br>Add transactional integrity<br>Add soft delete for audit trail |
+| **Notification Service** | Email notifications<br>SMS notifications<br>Push notifications<br>Appointment reminders | Add retry policy<br>Add message queue (RabbitMQ/Azure Service Bus)<br>Add templating engine<br>Add delivery status tracking     |
+
 
 ## 4. Impact of Adding Billing on the Model
 ## New Entities Required
