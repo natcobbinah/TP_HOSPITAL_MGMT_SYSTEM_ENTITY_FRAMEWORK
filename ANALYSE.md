@@ -1,4 +1,4 @@
-# 📊 ANALYSE — Hospital Management System
+#  ANALYSE — Hospital Management System
 ## Technical Analysis & Design Decisions
 
 **Project:** Hospital Management System  
@@ -10,7 +10,7 @@
 
 ## 1. Advantages and Disadvantages of the Model
 
-### ✅ Advantages
+### Advantages
 
 #### A. Architecture & Separation of Concerns
 
